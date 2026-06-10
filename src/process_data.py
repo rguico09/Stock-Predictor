@@ -1,3 +1,6 @@
+# takes the raw OHLCV data of each ticker and cleans them
+# and saves it to data/processed
+
 import pandas as pd
 
 def clean_data(ticker):
@@ -17,5 +20,6 @@ def clean_data(ticker):
     df.to_csv(processed_path)
 
 ticker_symbols = ["ES=F", "NQ=F", "QQQ", "AAPL", "NVDA", "AMZN"]
+
 for ticker in ticker_symbols:
     clean_data(ticker)

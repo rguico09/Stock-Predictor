@@ -1,3 +1,6 @@
+# downloads raw OHLCV data for specified tickers
+# and saves it to data/raw
+
 import yfinance as yf
 import pandas as pd
 import datetime
