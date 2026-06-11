@@ -1,8 +1,65 @@
-# a function that takes in raw OHLCV data and returns a DataFrame with engineered features
+# functions that takes in raw OHLCV data and returns a DataFrame with engineered features
 
-# features such as:
-#   - lag returns: % price change over a period of time (1, 5, 10, 20 days etc.)
-#   - rolling means: e.g. 10-day / 50-day SMA
-#   - rolling volatility: e.g. 10-day standard deviation of returns
-#   - volume change: % change in volume vs. previous day
+def add_moving_averages(df):
 
+    return df
+
+def add_macd(df):
+
+    return df
+
+def add_rate_of_change(df):
+
+    return df
+
+def add_bolllinger_bands(df):
+
+    return df
+
+def add_rsi(df):
+
+    return df
+
+def add_volatility(df):
+
+    return df
+
+def add_atr(df):
+
+    return df
+
+def add_obv(df):
+
+    return df
+
+def add_volume_ratio(df):
+
+    return df
+
+def add_lag_features(df):
+
+    return df
+
+def add_calendar_features(df):
+
+    return df
+
+def add_all_features(df, drop_na=True):
+    df = df.copy()
+
+    df = add_moving_averages(df)
+    df = add_macd(df)
+    df = add_rate_of_change(df)
+    df = add_bolllinger_bands(df)
+    df = add_rsi(df)
+    df = add_volatility(df)
+    df = add_atr(df)
+    df = add_obv(df)
+    df = add_volume_ratio(df)
+    df = add_lag_features(df)
+    df = add_calendar_features(df)
+
+    if drop_na:
+        df.dropna(inplace=True)
+
+    return df
