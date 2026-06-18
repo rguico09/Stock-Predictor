@@ -108,3 +108,30 @@ A lower standard deviation isn't necessarily better
 - when assessing the amount of deviation in their portfolios, investors should consider their tolerance for volatilty and their overall investment objectives
 
 More aggressive investors may be comfortable with an investment strategy that opts for vehicles with higher-than-average volatility, while more conservative investors may not
+
+## Understanding the Relationship between Standard Deviation and Investment Risk
+In investing, standard deviation is used as an indicator of market volatility, and thus of risk
+- the more unpredictable the price action and the wider the range, the greater the risk
+
+Range-bound securities, or those that don't stray far from their means, are not considered a great risk
+- that's because it can be assumed (with relative certainty) that they continue to behave in the same way
+
+A security with a very large trading range and a tendency to spike, reverse suddenly, or gap is much riskier, which can mean a larger loss
+
+> But remember, risk is not necessarily a bad thing. The riskier the security, the greater the potential it has for a payout.
+
+When using standard deviation to measure risk in the stock market, the underlying assumption is that the majority of price activity follows the pattern of normal distribution
+- in a normal distribution, individual values fall within one standard deviation of the mean, above or below, 68% of the time
+- values are within two standard deviations 95% of the time
+
+For example,, in a stock with a mean price of $45 and a standard deviation of $5:
+- it can be assumed with 95% certainty that the next closing price remains between $35 and $55
+- however, price plummets or spikes outside of this range 5% of the time
+
+> A stock with high volatility generally has a high standard deviation, while the deviation of a stable blue-chip stock is usually fairly low.
+
+### What can we Determine from this?
+The smaller the standard deviation, the less risky an investment will be, dollar-for-dollar
+ 
+ On the other hand, the larger the variance and standard deviation, the more volatile a security
+ - while investors can assume price remains within two standard deviations of the mean 95% of the time, this can still be a very large range
