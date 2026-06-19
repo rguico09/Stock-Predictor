@@ -1,215 +1,141 @@
 # Stock Direction Predictor
 
-A beginner-friendly end-to-end machine learning pipeline that predicts whether a stock will go **up or down** the following day. Built with Python, XGBoost, and Streamlit.
+A machine learning pipeline that predicts whether a stock or index will go **up or down** the following trading day. Built with Python, Scikit-Learn, XGBoost, and Streamlit.
 
-> **Disclaimer:** This project is for learning purposes only. It is not financial advice and should not be used to make real investment decisions.
-
----
-
-## What it does
-
-1. Fetches historical price data from Yahoo Finance via `yfinance`
-2. Engineers technical features (moving averages, momentum, volatility, lag features)
-3. Trains an XGBoost classifier using walk-forward validation (time-series safe)
-4. Evaluates performance with accuracy, AUC, and F1 score
-5. Serves predictions via a Streamlit dashboard
+> **Disclaimer:** This project is for learning and educational purposes only. It is not financial advice and should not be used to make real investment decisions.
 
 ---
 
-## Project structure
+## 🏗️ What it does
+
+1. **Ingests historical price data** from Yahoo Finance via `yfinance` ([raw_data.py](file:///Users/rianelaurenceguico/Personal/Projects/Stock%20Predictor/Stock-Predictor/src/raw_data.py)).
+2. **Cleans and structures** the raw data, aligning columns and index parameters ([process_data.py](file:///Users/rianelaurenceguico/Personal/Projects/Stock%20Predictor/Stock-Predictor/src/process_data.py)).
+3. **Engineers technical indicators** (momentum, mean reversion, volatility, volume ratios, return lags, and calendar effects) ([features.py](file:///Users/rianelaurenceguico/Personal/Projects/Stock%20Predictor/Stock-Predictor/src/features.py)).
+4. **Trains models using walk-forward validation** (time-series safe cross-validation) and compares a baseline `DummyClassifier` against `RandomForestClassifier` and `XGBClassifier` ([model.py](file:///Users/rianelaurenceguico/Personal/Projects/Stock%20Predictor/Stock-Predictor/src/model.py)).
+5. **Evaluates model performance** using Accuracy, F1-score, Confusion Matrix, and ROC-AUC metrics ([evaluate.py](file:///Users/rianelaurenceguico/Personal/Projects/Stock%20Predictor/Stock-Predictor/src/evaluate.py)).
+6. **Performs standalone next-day predictions** utilizing serialized weights ([predict.py](file:///Users/rianelaurenceguico/Personal/Projects/Stock%20Predictor/Stock-Predictor/src/predict.py)).
+7. **Serves forecasts and charts** via a dark-theme, responsive Streamlit dashboard dashboard ([dashboard.py](file:///Users/rianelaurenceguico/Personal/Projects/Stock%20Predictor/Stock-Predictor/app/dashboard.py)).
+
+---
+
+## 📂 Project Structure
 
 ```
 stock-predictor/
 │
 ├── data/
-│   ├── raw/                  # Downloaded price data (untouched)
-│   └── processed/            # Engineered features, cleaned dataframes
-│
-├── notebooks/
-│   ├── 01_testing.ipynb
+│   ├── raw/                  # Downloaded price data (untouched CSV files)
+│   └── processed/            # Cleaned dataframes with date indexes
 │
 ├── src/
-│   ├── raw_data.py           # Fetches data from yfinance, saves to data/raw/
-|   ├── process_data.py       # Processes and cleans data, saves to data/processed
-│   ├── features.py           # All feature engineering logic lives here
-│   ├── model.py              # Training, walk-forward validation, saving model
-│   ├── evaluate.py           # Metrics — accuracy, AUC, F1, confusion matrix
-│   └── predict.py            # Load saved model, run inference on new data
+│   ├── raw_data.py           # Ingests raw data from yfinance
+│   ├── process_data.py       # Cleans OHLCV columns and handles indexes
+│   ├── features.py           # Technical indicators & feature engineering logic
+│   ├── evaluate.py           # Computes classification performance metrics
+│   ├── model.py              # Chronological splits, validation folds, and model training
+│   └── predict.py            # Model loader and standalone next-day predictor
 │
 ├── app/
-│   └── dashboard.py          # Streamlit dashboard (or FastAPI if doing React)
+│   └── dashboard.py          # Streamlit UI with Plotly charts and sync capabilities
 │
 ├── models/
-│   └── xgb_model.pkl         # Saved trained model
+│   └── xgb_model.pkl         # Serialized final XGBoost Classifier model
 │
-├── requirements.txt
-└── README.md
+├── notebooks/
+│   └── 01_testing.ipynb      # Interactive testing notebook
+│
+├── IMPLEMENTATION.md         # Detailed pipeline documentation
+├── requirements.txt          # Requirements/dependencies list
+└── README.md                 # Project README (This file)
 ```
 
 ---
 
-## Getting started
+## 🚀 Getting Started
 
-### Prerequisites
-
-- Python 3.10+
-- pip
-
-### Installation
+### 1. Installation
 
 ```bash
-# Clone the repo
+# Clone the repository
 git clone https://github.com/your-username/stock-predictor.git
 cd stock-predictor
 
 # Create and activate a virtual environment
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate        # macOS/Linux
-venv\Scripts\activate           # Windows
+# venv\Scripts\activate         # Windows (cmd)
 
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-### Environment variables
-
-Create a `.env` file in the project root. If you are using the OpenAI API or any other key-based service, add it here:
-
-```
-# .env
-OPENAI_API_KEY=your_key_here   # optional, only needed if extending with LLM features
-```
-
-> **Never commit `.env` to GitHub.** It is already listed in `.gitignore`.
-
----
-
-## Usage
-
-### 1. Fetch data
-
+*Note for macOS users:* XGBoost requires the OpenMP library to run. If you run into missing library errors, run:
 ```bash
-python src/data.py --ticker AAPL --period 5y
+brew install libomp
 ```
 
-This downloads historical price data and saves it to `data/raw/AAPL.csv`.
+---
 
-### 2. Engineer features and train the model
+## 💻 Usage & CLI Guide
 
-Run the notebooks in order for an interactive walkthrough:
+Run the pipeline steps sequentially from the project root:
 
+### 1. Ingest Data
 ```bash
-jupyter notebook notebooks/
+python3 src/raw_data.py
 ```
+This fetches 5 years of daily data for default tickers (`AAPL`, `NVDA`, `AMZN`, `QQQ`, `NQ=F`, `ES=F`) and saves them to `data/raw/`.
 
-Or run the pipeline directly:
-
+### 2. Clean & Format Data
 ```bash
-python src/model.py --ticker AAPL
+python3 src/process_data.py
 ```
+Cleans row inconsistencies, structures headers, indexes on dates, and saves files to `data/processed/`.
 
-This trains the model using walk-forward validation and saves it to `models/xgb_model.pkl`.
-
-### 3. Launch the dashboard
-
+### 3. Train Model
 ```bash
-streamlit run app/dashboard.py
+python3 -m src.model --ticker AAPL
 ```
+Runs 5-fold walk-forward cross-validation on the training set, prints performance metrics comparisons for Baseline vs. Random Forest vs. XGBoost, fits the final XGBoost model, prints holdout test results, and serializes the model to `models/xgb_model.pkl`.
 
-Then open [http://localhost:8501](http://localhost:8501) in your browser. Enter any ticker symbol and click **Run prediction**.
+### 4. Standalone Predict
+```bash
+python3 -m src.predict --ticker AAPL
+```
+Loads `models/xgb_model.pkl`, structures features for the latest trading day, and returns next-day direction, probability, and confidence.
 
----
-
-## Features engineered
-
-### Trend / Momentum
- 
-| Feature | Description |
-|---|---|
-| `sma_5`, `sma_10`, `sma_20` | Simple moving averages over 5, 10, and 20 days |
-| `ema_5`, `ema_10`, `ema_20` | Exponential moving averages — weight recent prices more heavily |
-| `macd` | Difference between EMA(12) and EMA(26) — captures trend direction |
-| `macd_signal` | EMA(9) of MACD — used to spot crossover signals |
-| `macd_hist` | MACD minus signal line — shows momentum strength |
-| `roc_5`, `roc_10`, `roc_20` | Rate of change — percentage price movement over N days |
- 
-### Mean Reversion
- 
-| Feature | Description |
-|---|---|
-| `rsi` | Relative Strength Index (14-day) — 0–100 scale; >70 overbought, <30 oversold |
-| `bb_upper`, `bb_lower` | Bollinger Bands — rolling mean ± 2 standard deviations |
-| `bb_width` | Width of the bands — proxy for current volatility |
-| `bb_pct_b` | Where price sits within the bands (0 = lower, 1 = upper) |
- 
-### Volatility
- 
-| Feature | Description |
-|---|---|
-| `volatility_5`, `volatility_20` | Rolling standard deviation of daily returns over 5 and 20 days |
-| `atr` | Average True Range (14-day) — captures daily price swing magnitude |
- 
-### Volume
- 
-| Feature | Description |
-|---|---|
-| `obv` | On-Balance Volume — cumulative volume weighted by price direction |
-| `volume_ratio` | Today's volume relative to its 20-day average; >1 means above-average activity |
- 
-### Lag Features
- 
-| Feature | Description |
-|---|---|
-| `return_lag_1`, `return_lag_2` | Daily return from 1 and 2 days ago |
-| `return_lag_5`, `return_lag_10` | Daily return from 5 and 10 days ago |
- 
-### Calendar Effects
- 
-| Feature | Description |
-|---|---|
-| `day_of_week` | Day of the week (0 = Monday, 4 = Friday) |
-| `month` | Month of the year — captures seasonal patterns |
+### 5. Launch the Dashboard
+```bash
+python3 -m streamlit run app/dashboard.py
+```
+Launches the interactive dashboard in your default browser at `http://localhost:8501`.
 
 ---
 
-## Evaluation approach
+## 📊 Technical Indicators Engineered
 
-Standard random train/test splits **cannot** be used for time-series data — they cause data leakage by allowing the model to indirectly learn from the future.
-
-This project uses **walk-forward validation**: the dataset is split into `n` folds. For each fold, the model is trained on all past data and tested on the next period only. The window then slides forward. This mirrors how a real model would be deployed.
-
-Key metrics reported per fold:
-
-- Accuracy
-- AUC (area under the ROC curve)
-- F1 score
+* **Moving Averages**: 5, 10, and 20-day Simple (SMA) and Exponential (EMA) values.
+* **Momentum**: MACD Line, Signal Line, Histogram, and Rate of Change (ROC 5, 10, 20 days).
+* **Mean Reversion**: RSI (14-day) and Bollinger Bands (20-day width, %b position).
+* **Volatility**: Rolling standard deviations of daily returns (5, 20 days) and Average True Range (ATR).
+* **Volume**: On-Balance Volume (OBV) and volume ratio (current volume vs 20-day average).
+* **Lags & Calendar**: Multi-day return lags (1, 2, 5, 10 days), day of the week, and month of the year.
 
 ---
 
-## Tech stack
+## 📈 Evaluation Approach
 
-| Purpose | Library |
-|---|---|
-| Data fetching | `yfinance` |
-| Data wrangling | `pandas`, `numpy` |
-| Modelling | `scikit-learn`, `xgboost` |
-| Visualisation | `matplotlib`, `seaborn` |
-| Dashboard | `streamlit` |
-| Environment | `python-dotenv` |
+Time-series data cannot use randomized splits since they cause **data leakage** by letting models look into the future. 
+
+Instead, this project implements a strict time-ordered pipeline:
+1. **Chronological Splitting**: 80% of historical data is used for training/validation, and the remaining 20% is set aside as an unseen test holdout.
+2. **Walk-Forward Validation**: Inside the 80% training set, `TimeSeriesSplit` splits the data into 5 moving chronological folds. For each fold, models are trained on past data and validated on the subsequent segment.
 
 ---
 
-## Limitations
+## 💡 Potential Extensions
 
-- Stock markets are noisy. No model reliably predicts short-term price direction — this is a known-hard problem.
-- The value of this project is the **pipeline and evaluation methodology**, not the predictions themselves.
-- Features are intentionally simple to keep the project beginner-friendly. Real quant systems use far richer signals.
-
----
-
-## Potential extensions
-
-- Support multiple tickers with a portfolio view
-- Add a React + Recharts frontend for a richer dashboard
-- Experiment with LSTM or transformer-based models for sequence modelling
-- Add backtesting to simulate hypothetical trades
+* Support multiple tickers with a portfolio view.
+* Add a React + Recharts frontend for a richer, customized dashboard interface.
+* Experiment with LSTM or Transformer-based deep learning models for time-series forecasting.
+* Add backtesting logic to simulate hypothetical trade entries and performance metrics over time.

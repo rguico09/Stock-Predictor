@@ -1,7 +1,6 @@
 # functions that takes in raw OHLCV data and returns a DataFrame with engineered features
 
 import pandas as pd
-import numpy as np
 
 def add_moving_averages(df: pd.DataFrame) -> pd.DataFrame:
     # SMA and EMA
