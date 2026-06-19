@@ -6,7 +6,6 @@
 import argparse
 import os
 import pandas as pd
-import numpy as np
 import joblib
 from typing import Dict, Any
 
