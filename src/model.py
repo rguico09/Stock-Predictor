@@ -108,7 +108,13 @@ def train_and_save_best_model(ticker: str):
     X_train, X_test, y_train, y_test = chronological_split(ticker)
 
     # 1. Run Walk-Forward Validation
-    walk_forward_validation(ticker)
+    avg_results = walk_forward_validation(ticker)
+    
+    # Save validation metrics to JSON
+    os.makedirs("models", exist_ok=True)
+    import json
+    with open("models/evaluation_metrics.json", "w") as f:
+        json.dump(avg_results, f)
 
     # 2. Train final XGBoost model on all training data
     print(f"\nTraining final XGBoost model on all training data for {ticker}...")

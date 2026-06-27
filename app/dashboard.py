@@ -14,12 +14,11 @@ from src.raw_data import load_data
 from src.process_data import clean_data
 from src.features import add_all_features
 from src.predict import predict_next_day
-from src.model import train_and_save_best_model, walk_forward_validation
+from src.model import train_and_save_best_model
 
 # Set Streamlit page config
 st.set_page_config(
     page_title="Stock Direction Predictor",
-    page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -30,7 +29,6 @@ st.markdown(
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
     
-    /* Modern UI Typography override */
     html, body, [class*="css"], .stMarkdown {
         font-family: 'Outfit', sans-serif;
     }
@@ -38,7 +36,6 @@ st.markdown(
         font-family: 'JetBrains Mono', monospace !important;
     }
     
-    /* Premium Glassmorphic Card Styles */
     .dashboard-card {
         background: rgba(28, 30, 41, 0.7);
         border: 1px solid rgba(255, 255, 255, 0.08);
@@ -49,7 +46,6 @@ st.markdown(
         margin-bottom: 20px;
     }
     
-    /* Hero Prediction Cards */
     .pred-card-up {
         background: linear-gradient(135deg, rgba(0, 184, 148, 0.12) 0%, rgba(0, 206, 201, 0.2) 100%);
         border: 1px solid rgba(0, 206, 201, 0.35);
@@ -110,10 +106,10 @@ st.markdown(
     """
     <div style="background: linear-gradient(90deg, #1e1e2f 0%, #2d3436 100%); padding: 30px; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 30px;">
         <h1 style="color: #ffffff; margin: 0; font-weight: 700; font-size: 2.8rem; letter-spacing: -1px;">
-            📊 Stock Direction Predictor
+            Stock Direction Predictor
         </h1>
         <p style="color: #a4b0be; margin: 10px 0 0 0; font-size: 1.15rem; font-weight: 300;">
-            An end-to-end Machine Learning pipeline utilizing technical feature engineering, walk-forward time-series validation, and XGBoost to predict next-day stock price direction.
+            An end-to-end Machine Learning pipeline utilising technical feature engineering, walk-forward time-series validation, and XGBoost to predict next-day stock price direction.
         </p>
     </div>
     """,
@@ -121,7 +117,7 @@ st.markdown(
 )
 
 # Sidebar setup
-st.sidebar.markdown("### ⚙️ Settings & Pipeline")
+st.sidebar.markdown("### Settings & Pipeline")
 
 # Stock Tickers List
 default_tickers = ["AAPL", "NVDA", "AMZN", "QQQ", "NQ=F", "ES=F"]
@@ -135,7 +131,7 @@ else:
 st.sidebar.markdown("---")
 
 # Sync & Training Controls
-st.sidebar.subheader("🔄 Actions")
+st.sidebar.subheader("Actions")
 
 def sync_ticker_data(t):
     with st.spinner(f"Downloading historical data for {t} via yfinance..."):
@@ -173,19 +169,19 @@ model_file_exists = os.path.exists("models/xgb_model.pkl")
 
 # Sidebar Buttons
 if ticker:
-    if st.sidebar.button("🔄 Sync & Clean Latest Data"):
+    if st.sidebar.button("Sync & Clean Latest Data"):
         if sync_ticker_data(ticker):
             st.rerun()
 
     if processed_file_exists:
-        if st.sidebar.button("🤖 Re-train Model on Ticker"):
+        if st.sidebar.button("Re-train Model on Ticker"):
             retrain_model(ticker)
             st.rerun()
 
 st.sidebar.markdown(
     """
     <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; font-size: 0.85rem; color: #a4b0be; margin-top: 20px;">
-        <strong>💡 Note:</strong><br>
+        <strong>Note:</strong><br>
         Walk-Forward validation prevents temporal data leakage by evaluating models sequentially over 5 chronological folds.
     </div>
     """,
@@ -199,7 +195,7 @@ else:
     # Ensure data is synced/processed
     if not processed_file_exists:
         st.warning(f"No processed data found for **{ticker}**. Let's download it now.")
-        if st.button("🚀 Fetch Data & Setup Ticker"):
+        if st.button("Fetch Data & Setup Ticker"):
             if sync_ticker_data(ticker):
                 st.rerun()
     else:
@@ -265,7 +261,7 @@ else:
                     <div class="dashboard-card">
                         <div class="card-title">Next Day Prediction</div>
                         <div style="font-size: 1.15rem; color: #fab1a0; margin-top: 10px; font-weight: 600;">
-                            ⚠️ Model not trained.
+                            Model not trained.
                         </div>
                         <div style="font-size: 0.85rem; color: #a4b0be; margin-top: 5px;">
                             Click "Re-train Model" in the sidebar.
@@ -308,11 +304,11 @@ else:
             latest_rsi = df_feat["rsi"].iloc[-1]
             
             if latest_rsi >= 70:
-                rsi_label = "🔴 Overbought"
+                rsi_label = "Overbought"
             elif latest_rsi <= 30:
-                rsi_label = "🟢 Oversold"
+                rsi_label = "Oversold"
             else:
-                rsi_label = "🟡 Neutral"
+                rsi_label = "Neutral"
                 
             st.markdown(
                 f"""
@@ -328,7 +324,7 @@ else:
             )
             
         # Charts Section
-        st.subheader("📈 Financial Charts & Technical Indicators")
+        st.subheader("Financial Charts & Technical Indicators")
         
         # Prepare Plotly candlestick chart with overlays
         df_chart = add_all_features(df_cleaned, drop_na=False).tail(150).reset_index() # Show last 150 days
@@ -415,7 +411,7 @@ else:
 
         # Tabbed details (Historical metrics, Feature analysis)
         st.subheader("🔍 Details & Pipelines Analysis")
-        tab1, tab2 = st.tabs(["📊 ML Pipeline Metrics", "🗂️ Engineered Features Data"])
+        tab1, tab2 = st.tabs(["ML Pipeline Metrics", "Engineered Features Data"])
         
         with tab1:
             if model_loaded:
@@ -436,18 +432,23 @@ else:
                     st.markdown("#### Evaluation Statistics")
                     st.write("Below is a breakdown of metrics computed across the Walk-Forward folds:")
                     
-                    try:
-                        # Re-run or fetch stats from evaluation summary
-                        st.markdown(
-                            """
-                            | Model | Average Accuracy | Average F1 Score | Avg ROC-AUC |
-                            |---|---|---|---|
-                            | **Baseline (Dummy)** | 53.29% | 56.24% | 50.00% |
-                            | **Random Forest** | 48.90% | 46.84% | 50.30% |
-                            | **XGBoost** | **49.63%** | **47.09%** | **50.61%** |
-                            """
-                        )
-                    except Exception:
+                    import json
+                    metrics_file = "models/evaluation_metrics.json"
+                    
+                    if os.path.exists(metrics_file):
+                        with open(metrics_file, "r") as f:
+                            metrics = json.load(f)
+                        
+                        markdown_table = "| Model | Average Accuracy | Average F1 Score | Avg ROC-AUC |\n"
+                        markdown_table += "|---|---|---|---|\n"
+                        for model, stats in metrics.items():
+                            acc = f"{stats['accuracy']*100:.2f}%"
+                            f1 = f"{stats['f1_score']*100:.2f}%"
+                            auc = f"{stats['roc_auc']*100:.2f}%" if stats['roc_auc'] else "N/A"
+                            markdown_table += f"| **{model}** | {acc} | {f1} | {auc} |\n"
+                        
+                        st.markdown(markdown_table)
+                    else:
                         st.write("Train stats unavailable. Please re-run modeling.")
             else:
                 st.warning("Model file not found. Please click 'Re-train Model' in the sidebar to train models and view evaluation statistics.")
