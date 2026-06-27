@@ -13,7 +13,7 @@ A machine learning pipeline that predicts whether a stock or index will go **up 
 3. **Engineers technical indicators** (momentum, mean reversion, volatility, volume ratios, return lags, and calendar effects) ([features.py](file:///Users/rianelaurenceguico/Personal/Projects/Stock%20Predictor/Stock-Predictor/src/features.py)).
 4. **Trains models using walk-forward validation** (time-series safe cross-validation) and compares a baseline `DummyClassifier` against `RandomForestClassifier` and `XGBClassifier` ([model.py](file:///Users/rianelaurenceguico/Personal/Projects/Stock%20Predictor/Stock-Predictor/src/model.py)).
 5. **Evaluates model performance** using Accuracy, F1-score, Confusion Matrix, and ROC-AUC metrics ([evaluate.py](file:///Users/rianelaurenceguico/Personal/Projects/Stock%20Predictor/Stock-Predictor/src/evaluate.py)).
-6. **Performs standalone next-day predictions** utilizing serialized weights ([predict.py](file:///Users/rianelaurenceguico/Personal/Projects/Stock%20Predictor/Stock-Predictor/src/predict.py)).
+6. **Performs standalone next-day predictions** utilising serialised weights ([predict.py](file:///Users/rianelaurenceguico/Personal/Projects/Stock%20Predictor/Stock-Predictor/src/predict.py)).
 7. **Serves forecasts and charts** via a dark-theme, responsive Streamlit dashboard dashboard ([dashboard.py](file:///Users/rianelaurenceguico/Personal/Projects/Stock%20Predictor/Stock-Predictor/app/dashboard.py)).
 
 ---
@@ -39,12 +39,11 @@ stock-predictor/
 │   └── dashboard.py          # Streamlit UI with Plotly charts and sync capabilities
 │
 ├── models/
-│   └── xgb_model.pkl         # Serialized final XGBoost Classifier model
+│   └── xgb_model.pkl         # Serialised final XGBoost Classifier model
 │
 ├── notebooks/
 │   └── 01_testing.ipynb      # Interactive testing notebook
 │
-├── IMPLEMENTATION.md         # Detailed pipeline documentation
 ├── requirements.txt          # Requirements/dependencies list
 └── README.md                 # Project README (This file)
 ```
@@ -96,7 +95,7 @@ Cleans row inconsistencies, structures headers, indexes on dates, and saves file
 ```bash
 python3 -m src.model --ticker AAPL
 ```
-Runs 5-fold walk-forward cross-validation on the training set, prints performance metrics comparisons for Baseline vs. Random Forest vs. XGBoost, fits the final XGBoost model, prints holdout test results, and serializes the model to `models/xgb_model.pkl`.
+Runs 5-fold walk-forward cross-validation on the training set, prints performance metrics comparisons for Baseline vs. Random Forest vs. XGBoost, fits the final XGBoost model, prints holdout test results, and serialises the model to `models/xgb_model.pkl`.
 
 ### 4. Standalone Predict
 ```bash
@@ -125,7 +124,7 @@ Launches the interactive dashboard in your default browser at `http://localhost:
 
 ## 📈 Evaluation Approach
 
-Time-series data cannot use randomized splits since they cause **data leakage** by letting models look into the future. 
+Time-series data cannot use randomised splits since they cause **data leakage** by letting models look into the future. 
 
 Instead, this project implements a strict time-ordered pipeline:
 1. **Chronological Splitting**: 80% of historical data is used for training/validation, and the remaining 20% is set aside as an unseen test holdout.
@@ -136,6 +135,6 @@ Instead, this project implements a strict time-ordered pipeline:
 ## 💡 Potential Extensions
 
 * Support multiple tickers with a portfolio view.
-* Add a React + Recharts frontend for a richer, customized dashboard interface.
+* Add a React + Recharts frontend for a richer, customised dashboard interface.
 * Experiment with LSTM or Transformer-based deep learning models for time-series forecasting.
 * Add backtesting logic to simulate hypothetical trade entries and performance metrics over time.
